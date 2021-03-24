@@ -57,16 +57,19 @@ def main(args):
             ret, frame = cap.read()
         except:
             break
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img_pil = Image.fromarray(frame_rgb)
-        bboxes, scores, classes = yolo.detect(img_pil)
-        for bbox in bboxes:
-            frame = process_detection(whenet, frame, bbox, args)
-        # cv2.imshow('output',frame)
-        out.write(frame)
-        # key = cv2.waitKey(1) & 0xFF
-        # if key == ord("q"):
-        #     break
+        try:
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            img_pil = Image.fromarray(frame_rgb)
+            bboxes, scores, classes = yolo.detect(img_pil)
+            for bbox in bboxes:
+                frame = process_detection(whenet, frame, bbox, args)
+            # cv2.imshow('output',frame)
+            out.write(frame)
+            # key = cv2.waitKey(1) & 0xFF
+            # if key == ord("q"):
+            #     break
+        except Exception as e:
+            print(e)
 
     # cleanup
     cap.release()
