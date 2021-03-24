@@ -6,6 +6,8 @@ import os
 import argparse
 from yolo_v3.yolo_postprocess import YOLO
 from PIL import Image
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
 
 
 def process_detection( model, img, bbox, args ):
@@ -37,6 +39,10 @@ def process_detection( model, img, bbox, args ):
 
 
 def main(args):
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    set_session(tf.Session(config=config))
+
     whenet = WHENet(snapshot=args.snapshot)
     yolo = YOLO(**vars(args))
     VIDEO_SRC = 0 if args.video == '' else args.video # if video clip is passed, use web cam
@@ -56,11 +62,11 @@ def main(args):
         bboxes, scores, classes = yolo.detect(img_pil)
         for bbox in bboxes:
             frame = process_detection(whenet, frame, bbox, args)
-        cv2.imshow('output',frame)
+        # cv2.imshow('output',frame)
         out.write(frame)
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord("q"):
-            break
+        # key = cv2.waitKey(1) & 0xFF
+        # if key == ord("q"):
+        #     break
 
     # cleanup
     cap.release()
