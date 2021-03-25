@@ -57,6 +57,8 @@ def main(args):
             ret, frame = cap.read()
         except:
             break
+        if ret is False:
+            break
         try:
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img_pil = Image.fromarray(frame_rgb)
